@@ -6,14 +6,16 @@ Another pet project! This time, a simple IRC client based on an appropriate libr
 
 IRC Protocol
 ------------
-[RFC can be found on ietf.org](https://tools.ietf.org/html/rfc2812)
+[RFC can be found on ietf.org](http://tools.ietf.org/html/rfc1459)
 
 For client:
  * Connect via telnet to a server (i.e. adams.freenode:6666)
- * Send USER command:
-...```USER Flanker 0 * :Martin J```
+ * Send PASS command:
+...```PASS something```
  * Send NICK command:
 ...```NICK flankerdk```
+ * Send USER command:
+...```USER Flanker hostname servername :Martin J```
  * Await response
 ...Numeric 433 is ERR_ALREADYREGISTRED
  * More stuff coming here as I start working.
@@ -52,11 +54,7 @@ Replies send to user upon registration:
 002 RPL_YOURHOST         "Your host is <servername>, running version <ver>"
 003 RPL_CREATED          "This server was created <date>"
 004 RPL_MYINFO           "<servername> <version> <available user modes> <available channel modes>"
-```
-Reply send by the server when suggesting alternate host due to
-capacity issues or similar, consider it a rerpoute suggestion/bounce:
-```
-005 RPL_BOUNCE           "Try server <server name>, port <port number>"
+005 RPL_ISUPPORT         "A lot of gibberish"
 ```
 
 Error replies:
@@ -68,6 +66,9 @@ Error replies:
 405 ERR_TOOMANYCHANNELS  "<channel name> :You have joined too many channels"
 406 ERR_WASNOSUCHNICK    "<nickname> :There was no such nickname"
 407 ERR_TOOMANYTARGETS   "<target> :<error code> recipients. <abort message>"
-408 ERR_NOSUCHSERVICE    "<service name> :No such service"
 409 ERR_NOORIGIN         ":No origin specified"
+411 ERR_NORECIPIENT      ":No recipient given (<command>)"
+412 ERR_NOTEXTTOSEND     ":No text to send"
+413 ERR_NOTOPLEVEL       "<mask> :No toplevel domain specified"
+414 ERR_WILDTOPLEVEL     "<mask> :Wildcard in toplevel domain"
 ```
