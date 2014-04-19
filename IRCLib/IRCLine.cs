@@ -12,45 +12,66 @@ namespace IRCLib
     /// </summary>
     public class IRCLine
     {
-        private string _exp = "^(?:[:@]([^\\s]+) )?([^\\s]+)(?: ((?:[^:\\s][^\\s]* ?)*))?(?: ?:(.*))?$";
-        /// <summary>
-        /// List of all the values in the line, the first entry is the entire line.
-        /// </summary>
-        public readonly List<string> Values;
-
         /// <summary>
         /// The entire line.
         /// </summary>
         public readonly string Line;
 
         /// <summary>
-        /// The sender of the message.
+        /// The message prefix.
         /// </summary>
-        public readonly string Sender;
+        public readonly string Prefix;
 
         /// <summary>
-        /// The numeric contained in the message.
+        /// The command contained in the message.
         /// </summary>
-        public readonly string Numeric;
+        public readonly string Command;
 
         /// <summary>
-        /// The indended recipient of the message.
+        /// The message parameters.
         /// </summary>
-        public readonly string Reciever;
+        public readonly List<string> Params;
 
         /// <summary>
-        /// The actual message.
+        /// Default (and only) constructor. Parses an IRC message line into meaningfull fields.
         /// </summary>
-        public readonly string Message;
+        /// <param name="line">The IRC message to parse.</param>
         public IRCLine(string line)
         {
-            var match = Regex.Match(line, _exp, RegexOptions.IgnoreCase);
-            Values = new List<string>();
-            if (match.Success)
+            Line = line;
+            var parts = line.Split(' ');
+            var part = 0;
+            if (parts[part].StartsWith(":"))
             {
-                foreach (var grp in match.Groups)
+                Prefix = parts[part].Remove(0, 1);
+                part++;
+                Command = parts[part];
+            }
+            else
+            {
+                Command = parts[part];
+            }
+            part++;
+
+            Params = new List<string>();
+            for (var p = part; p < parts.Length; p++)
+            {
+                if (!parts[p].StartsWith(":"))
                 {
-                    Values.Add(grp.ToString());
+                    Params.Add(parts[p]);
+                }
+                else
+                {
+                    var sb = new StringBuilder();
+                    sb.Append(parts[p].Remove(0, 1));
+                    p++;
+                    while (p < parts.Length)
+                    {
+                        sb.Append(" ");
+                        sb.Append(parts[p]);
+                        p++;
+                    }
+                    Params.Add(sb.ToString());
                 }
             }
         }

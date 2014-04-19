@@ -20,6 +20,20 @@ For client:
 ...Numeric 433 is ERR_ALREADYREGISTRED
  * More stuff coming here as I start working.
 
+Anatomy of IRC Messages
+-----------------------
+
+Message format:
+```[ :<prefix> ] <command> [ <params> ] <crlf>```
+Things in square brackets are optional, prefix is the originator of the message,
+only servers shiould ever send this. The command should be either three digits or
+a valid IRC command. The params is a space seperated list of parameters for the command.
+crlf is Carriage Return - Line Feed, the IRC line terminator.
+
+An IRC Message must be at most 512 characters, including the CRLF terminator.
+
+There is more to params, but I have yet to figure that out ;)
+
 USER Message
 ------------
 Send at the beginning of connection, used to register the client with the network:

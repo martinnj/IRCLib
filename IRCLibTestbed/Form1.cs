@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using IRCLib;
 
@@ -22,7 +15,10 @@ namespace IRCLibTestbed
         {
             var ircl = new IRCLine(textBox1.Text);
 
-            foreach (var str in ircl.Values)
+            MessageBox.Show(ircl.Prefix);
+            MessageBox.Show(ircl.Command);
+            MessageBox.Show("now for params:");
+            foreach (var str in ircl.Params)
             {
                 MessageBox.Show(str);
             }
@@ -32,7 +28,10 @@ namespace IRCLibTestbed
         {
             var ircl = new IRCLine(textBox2.Text);
 
-            foreach (var str in ircl.Values)
+            MessageBox.Show(ircl.Prefix);
+            MessageBox.Show(ircl.Command);
+            MessageBox.Show("now for params:");
+            foreach (var str in ircl.Params)
             {
                 MessageBox.Show(str);
             }
@@ -42,7 +41,10 @@ namespace IRCLibTestbed
         {
             var ircl = new IRCLine(textBox3.Text);
 
-            foreach (var str in ircl.Values)
+            MessageBox.Show(ircl.Prefix);
+            MessageBox.Show(ircl.Command);
+            MessageBox.Show("now for params:");
+            foreach (var str in ircl.Params)
             {
                 MessageBox.Show(str);
             }
@@ -52,7 +54,10 @@ namespace IRCLibTestbed
         {
             var ircl = new IRCLine(textBox4.Text);
 
-            foreach (var str in ircl.Values)
+            MessageBox.Show(ircl.Prefix);
+            MessageBox.Show(ircl.Command);
+            MessageBox.Show("now for params:");
+            foreach (var str in ircl.Params)
             {
                 MessageBox.Show(str);
             }
