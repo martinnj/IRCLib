@@ -16,10 +16,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace IRCLib
 {
@@ -31,11 +33,9 @@ namespace IRCLib
     /// and do nothing else. It is up to the user or using classes to
     /// keep the connection alive (ping messages etc).
     /// </remarks>
+    //TODO: What should it do if none of the nicks gets accepted?
     public class Connection
     {
-        // TcpClient used for connection.
-        private TcpClient _con;
-
         // The underlying network stream.
         private readonly NetworkStream _stream;
 
@@ -56,13 +56,14 @@ namespace IRCLib
         public bool Registered;
         public Connection(ConnectionConfig conf)
         {
+            TcpClient con;
             Connected = false;
             Registered = false;
 
             // Create TCP connection to the server.
             try
             {
-                _con = new TcpClient(conf.Server, conf.Port);
+                con = new TcpClient(conf.Server, conf.Port);
             }
             catch (ArgumentOutOfRangeException ex)
             {
@@ -73,28 +74,44 @@ namespace IRCLib
             {
                 throw new Exception("SocketException upon connection attempt, errorcode=" + ex.ErrorCode,ex);
             }
-
+            Connected = true;
             // Attempt to register the connection (and ignore server messages for now.).
-            _stream = _con.GetStream();
+            _stream = con.GetStream();
 
             Send("PASS " + conf.Password);
             // Nicks loop go here.
             var approved = false;
-            while (approved == false)
+            while (!approved)
             {
                 foreach (var nick in conf.Nicks)
                 {
                     Send("NICK " + nick);
+
+                    // Allow server 2 seconds to reply.
+                    Thread.Sleep(2000);
+                    // TODO: Find a better way to do this.
+
+                    var rpl = ReadLine();
+                    if (rpl != null)
+                    {
+                        var r = new IRCLine(rpl);
+                        if ((IRCReplies) int.Parse(r.Command) == IRCReplies.ERR_NICKNAMEINUSE)
+                        {
+                            continue;   
+                        }
+                    }
+                    break;
                 }
-                
+                approved = true;
             }
             Send("USER " + conf.Username + " hostname servername :" + conf.Realname);
+            Registered = true;
         }
 
         /// <summary>
-        /// Converts a string to ASCII bytes and sends it over the connection. Messages should only be single lines.
+        /// Converts a string to ASCII bytes and sends it over the connection. Messages should only be single lines and no longer than 510 characters.
         /// </summary>
-        /// <param name="message">The message to convert into ASCII bytes.</param>
+        /// <param name="message">The message to convert into ASCII bytes. Message must be at most 510 chars and not contain CRLF.</param>
         /// <exception cref="Exception">Throws an exception if the stream is not writeable.</exception>
         /// TODO: Convert to async so we don't need to wait for the stream writing.
         public void Send(string message)
@@ -103,7 +120,11 @@ namespace IRCLib
             {
                 if (_stream.CanWrite)
                 {
-                    var bytes = Encoding.ASCII.GetBytes(message);
+                    if (message.Length > 510)
+                    {
+                        message = message.Substring(0, 510);
+                    }
+                    var bytes = Encoding.ASCII.GetBytes(message + "\r\n");
                     _stream.Write(bytes, 0, bytes.Length);
                 }
                 else
@@ -120,11 +141,12 @@ namespace IRCLib
         /// <summary>
         /// Returns a line from the connection.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A line with data from the stream, or null if no data is present.</returns>
         public string ReadLine()
         {
             var sr = new StreamReader(_stream);
-            return sr.ReadLine();
+            // If there is no data in stream, return null.
+            return !sr.EndOfStream ? sr.ReadLine() : null;
         }
     }
 }

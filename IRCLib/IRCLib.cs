@@ -21,30 +21,35 @@ namespace IRCLib
     /// <summary>
     /// Enum type for the possibe replies an IRC server might send back.
     /// </summary>
-    public enum Replies
+    public enum IRCReplies
     {
         // ReSharper disable InconsistentNaming
 
         // Registration replies.
-        RPL_WELCOME          = 001,
-        RPL_YOURHOST         = 002,
-        RPL_CREATED          = 003,
-        RPL_MYINFO           = 004,
-        RPL_ISUPPORT         = 005,
+        RPL_WELCOME             = 001,
+        RPL_YOURHOST            = 002,
+        RPL_CREATED             = 003,
+        RPL_MYINFO              = 004,
+        RPL_ISUPPORT            = 005,
 
         // Error replies.
-        ERR_NOSUCHNICK       = 401,
-        ERR_NOSUCHSERVER     = 402,
-        ERR_NOSUCHCHANNEL    = 403,
-        ERR_CANNOTSENDTOCHAN = 404,
-        ERR_TOOMANYCHANNELS  = 405,
-        ERR_WASNOSUCHNICK    = 406,
-        ERR_TOOMANYTARGETS   = 407,
-        ERR_NOORIGIN         = 409,
-        ERR_NORECIPIENT      = 411,
-        ERR_NOTEXTTOSEND     = 412,
-        ERR_NOTOPLEVEL       = 413,
-        ERR_WILDTOPLEVEL     = 414
+        ERR_NOSUCHNICK          = 401,
+        ERR_NOSUCHSERVER        = 402,
+        ERR_NOSUCHCHANNEL       = 403,
+        ERR_CANNOTSENDTOCHAN    = 404,
+        ERR_TOOMANYCHANNELS     = 405,
+        ERR_WASNOSUCHNICK       = 406,
+        ERR_TOOMANYTARGETS      = 407,
+        ERR_NOORIGIN            = 409,
+        ERR_NORECIPIENT         = 411,
+        ERR_NOTEXTTOSEND        = 412,
+        ERR_NOTOPLEVEL          = 413,
+        ERR_WILDTOPLEVEL        = 414,
+
+        ERR_ERR_NONICKNAMEGIVEN = 431,
+        ERR_ERRONEUSNICKNAME    = 432,
+        ERR_NICKNAMEINUSE       = 433,
+        ERR_NICKCOLLISION       = 436
         // ReSharper restore InconsistentNaming
     };
 
