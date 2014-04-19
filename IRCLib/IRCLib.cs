@@ -52,12 +52,4 @@ namespace IRCLib
         ERR_NICKCOLLISION       = 436
         // ReSharper restore InconsistentNaming
     };
-
-    /// <summary>
-    /// Baseclass for the entire library. So far, might change. you know. :)
-    /// </summary>
-    public class IRCLib
-    {
-        
-    }
 }

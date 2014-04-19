@@ -56,6 +56,11 @@ namespace IRCLib
         public bool Registered;
         public Connection(ConnectionConfig conf)
         {
+            if (!ValidConfig(conf))
+            {
+                throw new InvalidConfigException("The configuration was invalid, please recheck.");
+            }
+
             TcpClient con;
             Connected = false;
             Registered = false;
@@ -78,11 +83,19 @@ namespace IRCLib
             // Attempt to register the connection (and ignore server messages for now.).
             _stream = con.GetStream();
 
-            Send("PASS " + conf.Password);
+            try
+            {
+                Send("PASS " + conf.Password);
+            }
+            catch (NoConnectionException ex)
+            {
+                throw new NoConnectionException("Unable to send PASS command.",ex);
+            }
             // Nicks loop go here.
             var approved = false;
             while (!approved)
             {
+                //TODO: This loop thinks it's approved after all nicks are tried, even when it's not.
                 foreach (var nick in conf.Nicks)
                 {
                     Send("NICK " + nick);
@@ -129,12 +142,12 @@ namespace IRCLib
                 }
                 else
                 {
-                    throw new Exception("Connection._stream is no longer writeable, is it alive?");
+                    throw new NoConnectionException("Connection._stream is no longer writeable, is it alive?");
                 }
             }
             else
             {
-                throw new Exception("The connection is not alive.");
+                throw new NoConnectionException("The connection is not alive.");
             }
         }
 
@@ -147,6 +160,15 @@ namespace IRCLib
             var sr = new StreamReader(_stream);
             // If there is no data in stream, return null.
             return !sr.EndOfStream ? sr.ReadLine() : null;
+        }
+
+        private bool ValidConfig(ConnectionConfig conf)
+        {
+            var res = (conf.Nicks.Count > 0);
+            res = res && ((conf.Port > IPEndPoint.MinPort) && (conf.Port < IPEndPoint.MaxPort));
+            res = res && (conf.Server.Length > 4);
+            res = res && (conf.Username.Length > 0);
+            return res;
         }
     }
 }
