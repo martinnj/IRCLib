@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Connection.cs" />
     <Compile Include="ConnectionConfig.cs" />
+    <Compile Include="Exceptions.cs" />
     <Compile Include="IRCLib.cs" />
     <Compile Include="IRCLine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
