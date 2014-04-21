@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using IRCLib;
 
@@ -6,61 +7,42 @@ namespace IRCLibTestbed
 {
     public partial class Form1 : Form
     {
+        private Connection _con;
         public Form1()
         {
             InitializeComponent();
+            var nicks = new List<string> { "IRCLibTester", "IRCLibTester123", "IRCLibTesterTest" };
+            var conf = new ConnectionConfig("chat.freenode.net",
+                6666,
+                "conpass",
+                "someuser",
+                "Flanker IRCLibtest",
+                nicks);
+            _con = new Connection(conf);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var ircl = new IRCLine(textBox1.Text);
+            _con.Send(textBox1.Text);
+        }
 
-            MessageBox.Show(ircl.Prefix);
-            MessageBox.Show(ircl.Command);
-            MessageBox.Show("now for params:");
-            foreach (var str in ircl.Params)
-            {
-                MessageBox.Show(str);
-            }
+        private void Form1_Load(object sender, EventArgs e)
+        {
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            var ircl = new IRCLine(textBox2.Text);
-
-            MessageBox.Show(ircl.Prefix);
-            MessageBox.Show(ircl.Command);
-            MessageBox.Show("now for params:");
-            foreach (var str in ircl.Params)
+            var message = _con.ReadLine();
+            while (message != null)
             {
-                MessageBox.Show(str);
+                richTextBox1.Text = richTextBox1.Text + message + Environment.NewLine;
+                message = _con.ReadLine();
             }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            var ircl = new IRCLine(textBox3.Text);
-
-            MessageBox.Show(ircl.Prefix);
-            MessageBox.Show(ircl.Command);
-            MessageBox.Show("now for params:");
-            foreach (var str in ircl.Params)
-            {
-                MessageBox.Show(str);
-            }
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            var ircl = new IRCLine(textBox4.Text);
-
-            MessageBox.Show(ircl.Prefix);
-            MessageBox.Show(ircl.Command);
-            MessageBox.Show("now for params:");
-            foreach (var str in ircl.Params)
-            {
-                MessageBox.Show(str);
-            }
+            _con.Close("Leaving for now.");
         }
     }
 }
