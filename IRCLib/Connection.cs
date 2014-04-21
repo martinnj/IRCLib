@@ -15,8 +15,7 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -39,11 +38,18 @@ namespace IRCLib
         // The underlying network stream.
         private readonly NetworkStream _stream;
 
+        // Semaphore controlling access to the network stream.
+        private readonly Semaphore _streamlock;
+
+        // Threads for reading and writing.
+        private Thread _rThread;
+        private Thread _wThread;
+
         // Buffer that users can put text/commands in, that will be transmitted.
-        //private List<string> _sbuffer;
+        private ConcurrentQueue<string> _sbuffer;
 
         // Buffer containing messages from the server that users can retrieve at will.
-        //private List<string> _rbuffer;
+        private ConcurrentQueue<string> _rbuffer;
 
         /// <summary>
         /// Boolean value telling whether or not the TcpClient is connected.
@@ -82,6 +88,15 @@ namespace IRCLib
             Connected = true;
             // Attempt to register the connection (and ignore server messages for now.).
             _stream = con.GetStream();
+
+            _streamlock = new Semaphore(0,1);
+            _rbuffer = new ConcurrentQueue<string>();
+            _sbuffer = new ConcurrentQueue<string>();
+
+            _wThread = new Thread(WriteWorker);
+            _rThread = new Thread(ReadWorker);
+            _wThread.Start();
+            _rThread.Start();
 
             try
             {
@@ -126,24 +141,11 @@ namespace IRCLib
         /// </summary>
         /// <param name="message">The message to convert into ASCII bytes. Message must be at most 510 chars and not contain CRLF.</param>
         /// <exception cref="Exception">Throws an exception if the stream is not writeable.</exception>
-        /// TODO: Convert to async so we don't need to wait for the stream writing.
         public void Send(string message)
         {
             if (Connected)
             {
-                if (_stream.CanWrite)
-                {
-                    if (message.Length > 510)
-                    {
-                        message = message.Substring(0, 510);
-                    }
-                    var bytes = Encoding.ASCII.GetBytes(message + "\r\n");
-                    _stream.Write(bytes, 0, bytes.Length);
-                }
-                else
-                {
-                    throw new NoConnectionException("Connection._stream is no longer writeable, is it alive?");
-                }
+                _sbuffer.Enqueue(message);
             }
             else
             {
@@ -157,11 +159,24 @@ namespace IRCLib
         /// <returns>A line with data from the stream, or null if no data is present.</returns>
         public string ReadLine()
         {
-            var sr = new StreamReader(_stream);
-            // If there is no data in stream, return null.
-            return !sr.EndOfStream ? sr.ReadLine() : null;
+            if (_rbuffer.Count <= 0) return null;
+            string message;
+            _rbuffer.TryDequeue(out message);
+            return message;
         }
 
+        /// <summary>
+        /// Checks wether a ConnectionConfig is valid or not.
+        /// </summary>
+        /// <remarks>
+        /// There is 4 criteria:
+        /// 1) There must be at least one nick in the Nicks list.
+        /// 2) The port must be between IPEndPoint.MinPort and IPEndPoint.MaxPort.
+        /// 3) The servername must be at least 5 chars long.
+        /// 4) The username must be at least 1 char long.
+        /// </remarks>
+        /// <param name="conf">The configuration to validate.</param>
+        /// <returns>A boolean value indicating the validity of the configuration. True = Valid.</returns>
         private bool ValidConfig(ConnectionConfig conf)
         {
             var res = (conf.Nicks.Count > 0);
@@ -169,6 +184,72 @@ namespace IRCLib
             res = res && (conf.Server.Length > 4);
             res = res && (conf.Username.Length > 0);
             return res;
+        }
+
+        /// <summary>
+        /// Endless loop that reads the stream and puts any data in the read buffer.
+        /// throws NoConnectionException if the stream is closed.
+        /// </summary>
+        private void ReadWorker()
+        {
+            var sr = new StreamReader(_stream);
+            while (true)
+            {
+                _streamlock.WaitOne(-1);
+                if (_stream.DataAvailable)
+                {
+                    string message;
+                    try
+                    {
+                        message = sr.ReadLine();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new NoConnectionException("An exception occured when reading from the stream.",ex);
+                    }
+                    _rbuffer.Enqueue(message);
+                }
+                _streamlock.Release();
+            }
+        }
+
+        /// <summary>
+        /// Endless loop that writes the write buffer to the stream, throws NoConnectionException
+        /// if the stream is cant write.
+        /// </summary>
+        public void WriteWorker()
+        {
+            while (true)
+            {
+                if (_sbuffer.Count > 0)
+                {
+                    _streamlock.WaitOne(-1);
+                    try
+                    {
+                        string message;
+                        _sbuffer.TryDequeue(out message);
+                        if (message.Length > 510)
+                        {
+                            message = message.Substring(0, 510);
+                        }
+                        if (!message.EndsWith("\r\n"))
+                        {
+                            message = message + "\r\n";
+                        }
+                        var bytes = Encoding.ASCII.GetBytes(message);
+                        _stream.Write(bytes, 0, bytes.Length);
+                    }
+                    catch (ObjectDisposedException ex)
+                    {
+                        throw new NoConnectionException("The stream have been closed.", ex);
+                    }
+                    _streamlock.Release();
+                }
+                else
+                {
+                    Thread.Sleep(1000);
+                }
+            }
         }
     }
 }
