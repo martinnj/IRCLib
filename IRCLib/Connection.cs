@@ -42,8 +42,8 @@ namespace IRCLib
         private readonly Semaphore _streamlock;
 
         // Threads for reading and writing.
-        private Thread _rThread;
-        private Thread _wThread;
+        private readonly Thread _rThread;
+        private readonly Thread _wThread;
 
         // Buffer that users can put text/commands in, that will be transmitted.
         private ConcurrentQueue<string> _sbuffer;
@@ -89,7 +89,7 @@ namespace IRCLib
             // Attempt to register the connection (and ignore server messages for now.).
             _stream = con.GetStream();
 
-            _streamlock = new Semaphore(0,1);
+            _streamlock = new Semaphore(1,1);
             _rbuffer = new ConcurrentQueue<string>();
             _sbuffer = new ConcurrentQueue<string>();
 
@@ -123,7 +123,7 @@ namespace IRCLib
                     if (rpl != null)
                     {
                         var r = new IRCLine(rpl);
-                        if ((IRCReplies) int.Parse(r.Command) == IRCReplies.ERR_NICKNAMEINUSE)
+                        if ((IRCReplies) int.Parse(r.Command.Replace("NOTICE","000")) == IRCReplies.ERR_NICKNAMEINUSE)
                         {
                             continue;   
                         }
@@ -166,6 +166,28 @@ namespace IRCLib
         }
 
         /// <summary>
+        /// Causes the connection to close and terminate child threads.
+        /// </summary>
+        public void Close(string quitMessage)
+        {
+            Send("QUIT " + quitMessage);
+            Thread.Sleep(1000);
+            _rThread.Abort();
+            _wThread.Abort();
+            _stream.Dispose();
+        }
+
+        /// <summary>
+        /// Flushes the read/write buffers and the network stream.
+        /// </summary>
+        public void Flush()
+        {
+            _sbuffer = new ConcurrentQueue<string>();
+            _rbuffer = new ConcurrentQueue<string>();
+            _stream.Flush();
+        }
+
+        /// <summary>
         /// Checks wether a ConnectionConfig is valid or not.
         /// </summary>
         /// <remarks>
@@ -177,7 +199,7 @@ namespace IRCLib
         /// </remarks>
         /// <param name="conf">The configuration to validate.</param>
         /// <returns>A boolean value indicating the validity of the configuration. True = Valid.</returns>
-        private bool ValidConfig(ConnectionConfig conf)
+        private static bool ValidConfig(ConnectionConfig conf)
         {
             var res = (conf.Nicks.Count > 0);
             res = res && ((conf.Port > IPEndPoint.MinPort) && (conf.Port < IPEndPoint.MaxPort));
@@ -198,16 +220,15 @@ namespace IRCLib
                 _streamlock.WaitOne(-1);
                 if (_stream.DataAvailable)
                 {
-                    string message;
                     try
                     {
-                        message = sr.ReadLine();
+                        var message = sr.ReadLine();
+                        _rbuffer.Enqueue(message);
                     }
                     catch (Exception ex)
                     {
                         throw new NoConnectionException("An exception occured when reading from the stream.",ex);
                     }
-                    _rbuffer.Enqueue(message);
                 }
                 _streamlock.Release();
             }

@@ -25,6 +25,9 @@ namespace IRCLib
     {
         // ReSharper disable InconsistentNaming
 
+        // Own hacked number
+        NOTICE                  = 000,
+
         // Registration replies.
         RPL_WELCOME             = 001,
         RPL_YOURHOST            = 002,
