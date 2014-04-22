@@ -70,6 +70,8 @@ namespace IRCLib
         /// <summary>
         /// Constructor for the class. Note that the connection might not be established, even when this call returns.
         /// Check the Registered variable.
+        /// I am serious, reading or writing to the buffers before the handshake is complete (Registered==true) can
+        /// cause serious communication failures.
         /// </summary>
         /// <param name="conf"></param>
         public Connection(ConnectionConfig conf)
@@ -137,25 +139,23 @@ namespace IRCLib
                 {
                     Send("NICK " + nick);
 
-                    // Allow server 3 seconds to reply.
-                    Thread.Sleep(3000);
+                    // Allow server 10 seconds to reply.
+                    Thread.Sleep(10000);
                     // TODO: Find a better way to do this.
 
                     var reads = _rbuffer.ToArray();
                     if (!RecievedWelcome(reads)) continue;
-                    approved = true;
-                    break;
+                    Registered = true;
+                    return;
                 }
-                if (approved) continue;
                 // Since the chance of a GUID collision is sooooooooooooooo small, I always assume the guid gets approved :)
                 var gnick = "IRC" + Guid.NewGuid().ToString().Substring(0, 6);
                 Send("NICK " + gnick);
-                Send("NOTICE " + gnick + " No nicks in your configuration got approved by the server, temporary nick assigned: " + gnick);
+                Send("NOTICE " + gnick + " :No nicks in your configuration got approved by the server, temporary nick assigned: " + gnick);
                 approved = true;
             }
             
             Registered = true;
-            Thread.CurrentThread.Abort();
         }
 
         /// <summary>
@@ -261,26 +261,21 @@ namespace IRCLib
             var sr = new StreamReader(_stream);
             while (true)
             {
-                if (_stream.DataAvailable)
+                try
                 {
-                    _streamlock.WaitOne(-1);
-                    try
+                    while (!sr.EndOfStream)
                     {
                         var message = sr.ReadLine();
                         if (message != null)
-                            _rbuffer.Enqueue(Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(message)));
-                        // Casting to byte and then string to overcome encoding issues... I hope.
+                            _rbuffer.Enqueue(message);
                     }
-                    catch (Exception ex)
-                    {
-                        throw new NoConnectionException("An exception occured when reading from the stream.", ex);
-                    }
-                    _streamlock.Release();
+                    
                 }
-                else
+                catch (Exception ex)
                 {
-                    Thread.Sleep(100);
+                    throw new NoConnectionException("An exception occured when reading from the stream.", ex);
                 }
+                Thread.Sleep(100);
             }
         }
 
