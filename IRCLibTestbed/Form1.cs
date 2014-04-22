@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using IRCLib;
 
@@ -40,10 +41,13 @@ namespace IRCLibTestbed
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            if (!_con.Registered)
+            {
+                return;
+            }
             var message = _con.ReadLine();
             while (message != null)
             {
-                
                 richTextBox1.Text = richTextBox1.Text + message + Environment.NewLine;
                 message = _con.ReadLine();
             }
