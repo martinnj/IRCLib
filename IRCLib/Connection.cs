@@ -217,9 +217,9 @@ namespace IRCLib
             var sr = new StreamReader(_stream);
             while (true)
             {
-                _streamlock.WaitOne(-1);
                 if (_stream.DataAvailable)
                 {
+                    _streamlock.WaitOne(-1);
                     try
                     {
                         var message = sr.ReadLine();
@@ -227,10 +227,14 @@ namespace IRCLib
                     }
                     catch (Exception ex)
                     {
-                        throw new NoConnectionException("An exception occured when reading from the stream.",ex);
+                        throw new NoConnectionException("An exception occured when reading from the stream.", ex);
                     }
+                    _streamlock.Release();
                 }
-                _streamlock.Release();
+                else
+                {
+                    Thread.Sleep(100);
+                }
             }
         }
 
@@ -268,7 +272,7 @@ namespace IRCLib
                 }
                 else
                 {
-                    Thread.Sleep(1000);
+                    Thread.Sleep(100);
                 }
             }
         }
