@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -32,18 +33,23 @@ namespace IRCLib
     /// and do nothing else. It is up to the user or using classes to
     /// keep the connection alive (ping messages etc).
     /// </remarks>
-    //TODO: What should it do if none of the nicks gets accepted?
     public class Connection
     {
         // The underlying network stream.
-        private readonly NetworkStream _stream;
+        private  NetworkStream _stream;
 
         // Semaphore controlling access to the network stream.
-        private readonly Semaphore _streamlock;
+        private  Semaphore _streamlock;
+
+        // Constructor thread
+        private readonly Thread _constructor;
+
+        // Configuration.
+        private readonly ConnectionConfig _conf;
 
         // Threads for reading and writing.
-        private readonly Thread _rThread;
-        private readonly Thread _wThread;
+        private Thread _rThread;
+        private Thread _wThread;
 
         // Buffer that users can put text/commands in, that will be transmitted.
         private ConcurrentQueue<string> _sbuffer;
@@ -60,9 +66,22 @@ namespace IRCLib
         /// Boolean value telling whether or not the connection successfully registered with the server.
         /// </summary>
         public bool Registered;
+
+        /// <summary>
+        /// Constructor for the class. Note that the connection might not be established, even when this call returns.
+        /// Check the Registered variable.
+        /// </summary>
+        /// <param name="conf"></param>
         public Connection(ConnectionConfig conf)
         {
-            if (!ValidConfig(conf))
+            _conf = conf;
+            _constructor = new Thread(Handshake);
+            _constructor.Start();
+        }
+
+        private void Handshake()
+        {
+            if (!ValidConfig(_conf))
             {
                 throw new InvalidConfigException("The configuration was invalid, please recheck.");
             }
@@ -74,7 +93,7 @@ namespace IRCLib
             // Create TCP connection to the server.
             try
             {
-                con = new TcpClient(conf.Server, conf.Port);
+                con = new TcpClient(_conf.Server, _conf.Port);
             }
             catch (ArgumentOutOfRangeException ex)
             {
@@ -100,40 +119,64 @@ namespace IRCLib
 
             try
             {
-                Send("PASS " + conf.Password);
+                Send("PASS " + _conf.Password);
             }
             catch (NoConnectionException ex)
             {
                 throw new NoConnectionException("Unable to send PASS command.",ex);
             }
+
+            // I know its not recommended practice to send USER before NICK, bit my code is a bit sloppy, so I need it.
+            Send("USER " + _conf.Username + " hostname servername :" + _conf.Realname);
+
             // Nicks loop go here.
             var approved = false;
             while (!approved)
             {
-                //TODO: This loop thinks it's approved after all nicks are tried, even when it's not.
-                foreach (var nick in conf.Nicks)
+                foreach (var nick in _conf.Nicks)
                 {
                     Send("NICK " + nick);
 
-                    // Allow server 2 seconds to reply.
-                    Thread.Sleep(2000);
+                    // Allow server 3 seconds to reply.
+                    Thread.Sleep(3000);
                     // TODO: Find a better way to do this.
 
-                    var rpl = ReadLine();
-                    if (rpl != null)
-                    {
-                        var r = new IRCLine(rpl);
-                        if ((IRCReplies) int.Parse(r.Command.Replace("NOTICE","000")) == IRCReplies.ERR_NICKNAMEINUSE)
-                        {
-                            continue;   
-                        }
-                    }
+                    var reads = _rbuffer.ToArray();
+                    if (!RecievedWelcome(reads)) continue;
+                    approved = true;
                     break;
                 }
+                if (approved) continue;
+                // Since the chance of a GUID collision is sooooooooooooooo small, I always assume the guid gets approved :)
+                var gnick = "IRC" + Guid.NewGuid().ToString().Substring(0, 6);
+                Send("NICK " + gnick);
+                Send("NOTICE " + gnick + " No nicks in your configuration got approved by the server, temporary nick assigned: " + gnick);
                 approved = true;
             }
-            Send("USER " + conf.Username + " hostname servername :" + conf.Realname);
+            
             Registered = true;
+            Thread.CurrentThread.Abort();
+        }
+
+        /// <summary>
+        /// Checks an array of strings (assumed to be IRC messages) if a welcome message is among them.
+        /// </summary>
+        /// <param name="messages"></param>
+        /// <returns></returns>
+        private static bool RecievedWelcome(IEnumerable<string> messages)
+        {
+            foreach (var message in messages)
+            {
+                var line = new IRCLine(message);
+                var cmd = line.Command;
+                int reply;
+                var suc = int.TryParse(cmd, out reply);
+                if (suc && (IRCReplies)reply == IRCReplies.RPL_WELCOME)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -171,9 +214,10 @@ namespace IRCLib
         public void Close(string quitMessage)
         {
             Send("QUIT " + quitMessage);
-            Thread.Sleep(1000);
+            Thread.Sleep(1000); // Give reader and writer a chance to finish up :)
             _rThread.Abort();
             _wThread.Abort();
+            _constructor.Abort();
             _stream.Dispose();
         }
 
@@ -223,7 +267,9 @@ namespace IRCLib
                     try
                     {
                         var message = sr.ReadLine();
-                        _rbuffer.Enqueue(message);
+                        if (message != null)
+                            _rbuffer.Enqueue(Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(message)));
+                        // Casting to byte and then string to overcome encoding issues... I hope.
                     }
                     catch (Exception ex)
                     {
