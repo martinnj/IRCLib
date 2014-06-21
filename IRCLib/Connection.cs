@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -70,10 +69,10 @@ namespace IRCLib
         /// <summary>
         /// Constructor for the class. Note that the connection might not be established, even when this call returns.
         /// Check the Registered variable.
-        /// I am serious, reading or writing to the buffers before the handshake is complete (Registered==true) can
-        /// cause serious communication failures.
+        /// Note that this connection does not register a NICK, and as such the first message a client sends through
+        /// this connection should be the NICK message.
         /// </summary>
-        /// <param name="conf"></param>
+        /// <param name="conf">ConnectionConfig with the parameters for the connection.</param>
         public Connection(ConnectionConfig conf)
         {
             _conf = conf;
@@ -97,7 +96,7 @@ namespace IRCLib
             {
                 con = new TcpClient(_conf.Server, _conf.Port);
             }
-            catch (ArgumentOutOfRangeException ex)
+            catch (ArgumentOutOfRangeException ex) // This shouldn't happen since we check with ValidConfig if the ports are within range.
             {
                 throw new ArgumentOutOfRangeException(
                     "The portnumber was outside the portrange " + IPEndPoint.MinPort + "-" + IPEndPoint.MaxPort, ex);
@@ -107,7 +106,8 @@ namespace IRCLib
                 throw new Exception("SocketException upon connection attempt, errorcode=" + ex.ErrorCode,ex);
             }
             Connected = true;
-            // Attempt to register the connection (and ignore server messages for now.).
+
+            // Attempt to register the connection.
             _stream = con.GetStream();
 
             _streamlock = new Semaphore(1,1);
@@ -128,32 +128,8 @@ namespace IRCLib
                 throw new NoConnectionException("Unable to send PASS command.",ex);
             }
 
-            // I know its not recommended practice to send USER before NICK, bit my code is a bit sloppy, so I need it.
+            // I know its not recommended practice to send USER before NICK, but such is life :/
             Send("USER " + _conf.Username + " hostname servername :" + _conf.Realname);
-
-            // Nicks loop go here.
-            var approved = false;
-            while (!approved)
-            {
-                foreach (var nick in _conf.Nicks)
-                {
-                    Send("NICK " + nick);
-
-                    // Allow server 10 seconds to reply.
-                    Thread.Sleep(10000);
-                    // TODO: Find a better way to do this.
-
-                    var reads = _rbuffer.ToArray();
-                    if (!RecievedWelcome(reads)) continue;
-                    Registered = true;
-                    return;
-                }
-                // Since the chance of a GUID collision is sooooooooooooooo small, I always assume the guid gets approved :)
-                var gnick = "IRC" + Guid.NewGuid().ToString().Substring(0, 6);
-                Send("NICK " + gnick);
-                Send("NOTICE " + gnick + " :No nicks in your configuration got approved by the server, temporary nick assigned: " + gnick);
-                approved = true;
-            }
             
             Registered = true;
         }
@@ -163,21 +139,21 @@ namespace IRCLib
         /// </summary>
         /// <param name="messages"></param>
         /// <returns></returns>
-        private static bool RecievedWelcome(IEnumerable<string> messages)
-        {
-            foreach (var message in messages)
-            {
-                var line = new IRCLine(message);
-                var cmd = line.Command;
-                int reply;
-                var suc = int.TryParse(cmd, out reply);
-                if (suc && (IRCReplies)reply == IRCReplies.RPL_WELCOME)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        //private static bool RecievedWelcome(IEnumerable<string> messages)
+        //{
+        //    foreach (var message in messages)
+        //    {
+        //        var line = new IRCLine(message);
+        //        var cmd = line.Command;
+        //        int reply;
+        //        var suc = int.TryParse(cmd, out reply);
+        //        if (suc && (IRCReplies)reply == IRCReplies.RPL_WELCOME)
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
 
         /// <summary>
         /// Converts a string to ASCII bytes and sends it over the connection. Messages should only be single lines and no longer than 510 characters.
@@ -213,11 +189,14 @@ namespace IRCLib
         /// </summary>
         public void Close(string quitMessage)
         {
-            Send("QUIT " + quitMessage);
-            Thread.Sleep(1000); // Give reader and writer a chance to finish up :)
             _rThread.Abort();
+            _rThread.Join();
+            Send("QUIT " + quitMessage);
+            Thread.Sleep(1000); // Give writer a chance to send the quit message :)
             _wThread.Abort();
+            _wThread.Join();
             _constructor.Abort();
+            _constructor.Join();
             _stream.Dispose();
         }
 
@@ -235,18 +214,16 @@ namespace IRCLib
         /// Checks wether a ConnectionConfig is valid or not.
         /// </summary>
         /// <remarks>
-        /// There is 4 criteria:
-        /// 1) There must be at least one nick in the Nicks list.
-        /// 2) The port must be between IPEndPoint.MinPort and IPEndPoint.MaxPort.
-        /// 3) The servername must be at least 5 chars long.
-        /// 4) The username must be at least 1 char long.
+        /// There is 3 criteria:
+        /// 1) The port must be between IPEndPoint.MinPort and IPEndPoint.MaxPort.
+        /// 2) The servername must be at least 5 chars long.
+        /// 3) The username must be at least 1 char long.
         /// </remarks>
         /// <param name="conf">The configuration to validate.</param>
         /// <returns>A boolean value indicating the validity of the configuration. True = Valid.</returns>
         private static bool ValidConfig(ConnectionConfig conf)
         {
-            var res = (conf.Nicks.Count > 0);
-            res = res && ((conf.Port > IPEndPoint.MinPort) && (conf.Port < IPEndPoint.MaxPort));
+            var res = ((conf.Port > IPEndPoint.MinPort) && (conf.Port < IPEndPoint.MaxPort));
             res = res && (conf.Server.Length > 4);
             res = res && (conf.Username.Length > 0);
             return res;
@@ -269,7 +246,11 @@ namespace IRCLib
                         if (message != null)
                             _rbuffer.Enqueue(message);
                     }
-                    
+
+                }
+                catch (ThreadAbortException)
+                {
+                    return;
                 }
                 catch (Exception ex)
                 {
@@ -304,6 +285,10 @@ namespace IRCLib
                         }
                         var bytes = Encoding.ASCII.GetBytes(message);
                         _stream.Write(bytes, 0, bytes.Length);
+                    }
+                    catch (ThreadAbortException)
+                    {
+                        return;
                     }
                     catch (ObjectDisposedException ex)
                     {

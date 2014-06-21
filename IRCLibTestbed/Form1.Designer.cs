@@ -88,7 +88,6 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Button button2;
     }
 }
 

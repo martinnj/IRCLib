@@ -40,29 +40,18 @@ namespace IRCLib
         /// The real name to register with the server.
         /// </summary>
         public string Realname;
-        /// <summary>
-        /// List of nicks to attempt to register with.
-        /// </summary>
-        /// <remarks>
-        /// Will first try to register Nicks[0], then Nicks[1] etc.
-        /// If one succeeds, no more attempts are made, if all the nicks are
-        /// taken, a GUID will be generated and used.
-        /// </remarks>
-        public List<string> Nicks;
 
         public ConnectionConfig(string server,
                                 int    port,
                                 string password,
                                 string username,
-                                string realname,
-                                List<string> nicks)
+                                string realname)
         {
             Server = server;
             Port = port;
             Password = password;
             Username = username;
             Realname = realname;
-            Nicks = nicks;
         }
     }
 }

@@ -18,8 +18,7 @@ namespace IRCLibTestbed
                 6666,
                 "conpass",
                 "someuser",
-                "Flanker IRCLibtest",
-                nicks);
+                "Flanker IRCLibtest");
             _con = new Connection(conf);
         }
 
