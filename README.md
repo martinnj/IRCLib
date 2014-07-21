@@ -86,3 +86,27 @@ Error replies:
 413 ERR_NOTOPLEVEL       "<mask> :No toplevel domain specified"
 414 ERR_WILDTOPLEVEL     "<mask> :Wildcard in toplevel domain"
 ```
+
+License
+-------
+Copyright (C) 2014  Martin Jørgensen, http://flanker.dk
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <[](http://www.gnu.org/licenses/)>
+
+3rdparty stuff
+--------------
+The JSON.net library is provided by [James Newton-King](http://james.newtonking.com/json)
+and comes with a seperate license, see ```3rdparty/json.net.license.txt```.
+
+Icons are from the onebit set fount at [iconfinder](https://www.iconfinder.com/iconsets/onebit)

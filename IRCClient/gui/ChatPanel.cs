@@ -1,25 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace IRCClient
+namespace IRCClient.gui
 {
-    public partial class Form1 : Form
+    public partial class ChatPanel : UserControl
     {
-        public Form1()
+        public ChatPanel()
         {
             InitializeComponent();
-        }
-
-        private void licenseToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

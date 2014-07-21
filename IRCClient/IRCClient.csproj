@@ -53,10 +53,37 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="gui\ChatPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="gui\ChatPanel.Designer.cs">
+      <DependentUpon>ChatPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gui\RoomPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="gui\RoomPanel.Designer.cs">
+      <DependentUpon>RoomPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gui\TextPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="gui\TextPanel.Designer.cs">
+      <DependentUpon>TextPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gui\ChatPanel.resx">
+      <DependentUpon>ChatPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gui\RoomPanel.resx">
+      <DependentUpon>RoomPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gui\TextPanel.resx">
+      <DependentUpon>TextPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -72,6 +99,9 @@
     </None>
     <None Include="configs\settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="LICENSE">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -91,6 +121,26 @@
       <Project>{54364d46-cb12-4160-b244-cd2e07dbb444}</Project>
       <Name>IRCLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="3rdparty\icons\about.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="3rdparty\icons\chat.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="3rdparty\icons\help.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="3rdparty\icons\initscript.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="3rdparty\icons\preferences.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="3rdparty\json.net.license.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
