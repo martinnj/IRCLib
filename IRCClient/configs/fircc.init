@@ -1,1 +1,20 @@
 // Sample initscript
+// Syntax may change at any time, for now it will be similar to the IRC syntax.
+
+// Connect to the freenode network.
+CONNECT chat.freenode.net
+
+// Set the nick you want.
+NICK Bob
+
+// If you registered the nick, remember to tell nickserv.
+MSG Nickserv Identify Alice
+
+// Join any number of rooms.
+JOIN #ManInTheMiddle
+// If the above joins a room, send a message, if not, the following will not execute.
+> MSG Hey guys! :)
+
+JOIN #GoodCode
+
+// Rinse and repeat, join any number of networks/servers and rooms.
