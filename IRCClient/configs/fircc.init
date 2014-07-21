@@ -2,7 +2,7 @@
 // Syntax may change at any time, for now it will be similar to the IRC syntax.
 
 // Connect to the freenode network.
-CONNECT chat.freenode.net
+CONNECT chat.freenode.net 6666
 
 // Set the nick you want.
 NICK Bob
