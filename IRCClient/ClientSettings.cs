@@ -15,9 +15,9 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Windows.Forms;
 using Newtonsoft.Json;
@@ -29,9 +29,26 @@ namespace IRCClient
     /// </summary>
     public class ClientSettings
     {
-        // Related to the window
+        #region "constants and usefull type stuff"
+        /// <summary>
+        /// Enumeration type for the setting that decides when to show a baloon tip from the tray area.
+        /// </summary>
+        public enum NotificatonSettings
+        {
+            NoMessages,        // Never show baloon tips.
+            PersonalMessages,  // Show baloon tips on PMs.
+            MentionedMessages, // Show baloon tip when mentioned in any chat.
+            AllMessages        // Show baloon tip on activity in any room.
+        }
+
+        // This is where the config file will stay.
+        public const string ClientConfigPath = "configs/settings.json";
+        #endregion
+
+        #region "Settings that should be set in the constructor"
+        // Related to the window.
         public Point ClientLocation;
-        public Point ClientSize;
+        public Size ClientSize;
         public FormWindowState ClientStartState;
 
         // Information for the default font and realted shit.
@@ -39,12 +56,18 @@ namespace IRCClient
         public FontStyle ClientFontStyle;
         public int ClientFontSize;
 
+        // When to show baloon tips from the tray.
+        public NotificatonSettings ClientNotications;
+        // Words that trigger notifications.
+        public List<string> ClientNotificationTriggers;
+
         // Parse non-char bytes in IRC messages to RTF according to
         // http://stackoverflow.com/questions/23230480/irc-recieving-0x02-value-treat-as-formatting
         public bool ParseToRichText;
 
         // Use ident server, //TODO: Make an Ident implementation
         public bool UseIdentServer;
+        #endregion
 
         /// <summary>
         /// Default constructor, chooses a bunch of default settings.
@@ -52,12 +75,15 @@ namespace IRCClient
         public ClientSettings()
         {
             ClientLocation = new Point(0,0);
-            ClientSize = new Point(800,800);
+            ClientSize = new Size(800,800);
             ClientStartState = FormWindowState.Normal;
 
             ClientFontFamily = new FontFamily("Consolas");
             ClientFontStyle = FontStyle.Regular;
             ClientFontSize = 10;
+
+            ClientNotications = NotificatonSettings.PersonalMessages;
+            ClientNotificationTriggers = new List<string>();
 
             ParseToRichText = true;
 
@@ -70,7 +96,7 @@ namespace IRCClient
         /// <remarks>Throws IOException, ArgumentException and Exception when appropriate.</remarks>
         /// <param name="filename">Path to a json file with valid settings.</param>
         /// <returns>A ClientSettings object with the settings from the file.</returns>
-        public ClientSettings LoadFromFile(string filename)
+        public static ClientSettings LoadFromFile(string filename)
         {
             if (!File.Exists(filename)) throw new ArgumentException("File: \"" + filename + "\" does not exist.");
             try
@@ -95,7 +121,7 @@ namespace IRCClient
         /// </summary>
         /// <param name="filename">Path to the file the settings should be saved in.</param>
         /// <param name="settings">Instance of the settings to save.</param>
-        public void SaveToFile(string filename, ClientSettings settings)
+        public static void SaveToFile(string filename, ClientSettings settings)
         {
             try
             {

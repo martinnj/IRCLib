@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,7 +17,26 @@ namespace IRCClient
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+
+            var settings = new ClientSettings();
+            if (File.Exists(ClientSettings.ClientConfigPath))
+            {
+                settings = ClientSettings.LoadFromFile(ClientSettings.ClientConfigPath);
+            }
+            else
+            {
+                ClientSettings.SaveToFile(ClientSettings.ClientConfigPath, settings);
+            }
+
+            // Parse settings block.
+            var mainform = new MainForm(settings)
+            {
+                Location = settings.ClientLocation,
+                Size = settings.ClientSize,
+                WindowState = settings.ClientStartState
+            };
+
+            Application.Run(mainform);
         }
     }
 }
