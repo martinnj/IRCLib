@@ -56,6 +56,10 @@ namespace IRCClient
         public FontStyle ClientFontStyle;
         public int ClientFontSize;
 
+        // Appearance information.
+        public bool ClientMarkOps;
+        public bool ClientShowTimeStamps;
+
         // When to show baloon tips from the tray.
         public NotificatonSettings ClientNotications;
         // Words that trigger notifications.
@@ -63,10 +67,13 @@ namespace IRCClient
 
         // Parse non-char bytes in IRC messages to RTF according to
         // http://stackoverflow.com/questions/23230480/irc-recieving-0x02-value-treat-as-formatting
-        public bool ParseToRichText;
+        public bool ClientParseToRichText;
 
         // Use ident server, //TODO: Make an Ident implementation
-        public bool UseIdentServer;
+        public bool ClientUseIdentServer;
+
+        // Keep a chat window with the RAW IRC messages in?
+        public bool ClientKeepDebugWindow;
         #endregion
 
         /// <summary>
@@ -82,12 +89,17 @@ namespace IRCClient
             ClientFontStyle = FontStyle.Regular;
             ClientFontSize = 10;
 
+            ClientMarkOps = true;
+            ClientShowTimeStamps = true;
+
             ClientNotications = NotificatonSettings.PersonalMessages;
             ClientNotificationTriggers = new List<string>();
 
-            ParseToRichText = true;
+            ClientParseToRichText = true;
 
-            UseIdentServer = false;
+            ClientUseIdentServer = false;
+
+            ClientKeepDebugWindow = true;
         }
 
         /// <summary>

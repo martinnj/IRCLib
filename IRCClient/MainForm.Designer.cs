@@ -36,7 +36,6 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.initScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.licenseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,6 +49,7 @@
             this.iconMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.scintillaNETToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainsplitter)).BeginInit();
             this.mainsplitter.Panel1.SuspendLayout();
@@ -88,15 +88,14 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.preferencesToolStripMenuItem,
-            this.initScriptToolStripMenuItem});
+            this.preferencesToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.settingsToolStripMenuItem.Text = "Settings";
@@ -107,13 +106,7 @@
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
             this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.preferencesToolStripMenuItem.Text = "Preferences";
-            // 
-            // initScriptToolStripMenuItem
-            // 
-            this.initScriptToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("initScriptToolStripMenuItem.Image")));
-            this.initScriptToolStripMenuItem.Name = "initScriptToolStripMenuItem";
-            this.initScriptToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
-            this.initScriptToolStripMenuItem.Text = "Init Script";
+            this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -129,7 +122,7 @@
             // 
             this.helpToolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("helpToolStripMenuItem1.Image")));
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(118, 22);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.helpToolStripMenuItem1.Text = "Help";
             // 
             // licenseToolStripMenuItem
@@ -137,9 +130,10 @@
             this.licenseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.flankerIRCClientToolStripMenuItem,
             this.iRCLibToolStripMenuItem,
-            this.jSONnetToolStripMenuItem});
+            this.jSONnetToolStripMenuItem,
+            this.scintillaNETToolStripMenuItem});
             this.licenseToolStripMenuItem.Name = "licenseToolStripMenuItem";
-            this.licenseToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.licenseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.licenseToolStripMenuItem.Text = "Licenses";
             // 
             // flankerIRCClientToolStripMenuItem
@@ -213,9 +207,15 @@
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(103, 22);
             this.toolStripMenuItem2.Text = "Exit";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
+            // 
+            // scintillaNETToolStripMenuItem
+            // 
+            this.scintillaNETToolStripMenuItem.Name = "scintillaNETToolStripMenuItem";
+            this.scintillaNETToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.scintillaNETToolStripMenuItem.Text = "ScintillaNET";
             // 
             // MainForm
             // 
@@ -254,7 +254,6 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem initScriptToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem licenseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem flankerIRCClientToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem iRCLibToolStripMenuItem;
@@ -263,6 +262,7 @@
         private System.Windows.Forms.ContextMenuStrip iconMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem scintillaNETToolStripMenuItem;
     }
 }
 

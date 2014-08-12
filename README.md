@@ -89,7 +89,7 @@ Error replies:
 
 License
 -------
-Copyright (C) 2014  Martin Jørgensen, http://flanker.dk
+Copyright (C) 2014  Martin Jørgensen, http://martinnj.dk
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -102,7 +102,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see <[](http://www.gnu.org/licenses/)>
+along with this program.  If not, see [gnu.org](http://www.gnu.org/licenses/)
 
 3rdparty stuff
 --------------
@@ -110,3 +110,6 @@ The JSON.net library is provided by [James Newton-King](http://james.newtonking.
 and comes with a seperate license, see ```3rdparty/json.net.license.txt```.
 
 Icons are from the onebit set fount at [iconfinder](https://www.iconfinder.com/iconsets/onebit)
+
+The FastColoredTExtBox control is provided by [Pavel Torgashov](https://github.com/PavelTorgashov/FastColoredTextBox)
+and comes with a seperate license, see ```3rdparty/fastcoloredtextbox.license.txt```.

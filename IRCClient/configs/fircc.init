@@ -7,7 +7,7 @@ CONNECT chat.freenode.net 6666
 // Set the nick you want.
 NICK Bob
 
-// If you registered the nick, remember to tell nickserv.
+// If you registered the nick, remember to tell nickserv your password.
 MSG Nickserv Identify Alice
 
 // Join any number of rooms.

@@ -35,6 +35,9 @@
     <ApplicationIcon>chat.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FastColoredTextBox">
+      <HintPath>3rdparty\fastcoloredtextbox\FastColoredTextBox.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>3rdparty\json\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -143,6 +146,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="3rdparty\fastcoloredtextbox.license.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="3rdparty\icons\about.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

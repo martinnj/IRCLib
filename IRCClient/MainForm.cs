@@ -67,6 +67,15 @@ namespace IRCClient
         }
         #endregion
 
+        private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var settingsfrm = new SettingsForm();
+            if (settingsfrm.ShowDialog() == DialogResult.OK)
+            {
+                // Apply settings!
+            }
+        }
+
 
     }
 }
