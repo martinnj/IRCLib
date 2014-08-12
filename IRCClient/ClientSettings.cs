@@ -66,6 +66,8 @@ namespace IRCClient
         public NotificatonSettings ClientNotications;
         // Words that trigger notifications.
         public List<string> ClientNotificationTriggers;
+        // Use sound for notification?
+        public bool ClientUseNotificationSound;
 
         // Parse non-char bytes in IRC messages to RTF according to
         // http://stackoverflow.com/questions/23230480/irc-recieving-0x02-value-treat-as-formatting
@@ -97,6 +99,7 @@ namespace IRCClient
 
             ClientNotications = NotificatonSettings.PersonalMessages;
             ClientNotificationTriggers = new List<string>();
+            ClientUseNotificationSound = false;
 
             ClientParseToRichText = true;
 
