@@ -1,7 +1,7 @@
 {
     "ClientLocation":"25, 25",
-	"ClientSize":"1014, 604",
-	"ClientStartState":0,
+    "ClientSize":"1014, 604",
+    "ClientStartState":0,
     "ClientFontFamily":{"Name":"Consolas"},
     "ClientFontStyle":0,
     "ClientFontSize":9.75,
@@ -11,7 +11,7 @@
     "ClientNotications":1,
     "ClientNotificationTriggers":["Something long to initialize",
                                   "Yes you can have longer string as well as words",
-	                              "yourNick"],
+                                  "yourNick"],
     "ClientUseNotificationSound":false,
     "ClientParseToRichText":true,
     "ClientUseIdentServer":false,
