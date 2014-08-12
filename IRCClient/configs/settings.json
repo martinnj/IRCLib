@@ -1,1 +1,19 @@
-{"ClientLocation":"150, 150","ClientSize":"1014, 604","ClientStartState":0,"ClientFontFamily":{"Name":"Consolas"},"ClientFontStyle":0,"ClientFontSize":10.0,"ClientMarkOps":true,"ClientMoveOpsUp":true,"ClientShowTimeStamps":true,"ClientNotications":1,"ClientNotificationTriggers":[],"ClientUseNotificationSound":false,"ClientParseToRichText":true,"ClientUseIdentServer":false,"ClientKeepDebugWindow":true}
+{
+    "ClientLocation":"25, 25",
+	"ClientSize":"1014, 604",
+	"ClientStartState":0,
+    "ClientFontFamily":{"Name":"Consolas"},
+    "ClientFontStyle":0,
+    "ClientFontSize":9.75,
+    "ClientMarkOps":true,
+    "ClientMoveOpsUp":true,
+    "ClientShowTimeStamps":true,
+    "ClientNotications":1,
+    "ClientNotificationTriggers":["Something long to initialize",
+                                  "Yes you can have longer string as well as words",
+	                              "yourNick"],
+    "ClientUseNotificationSound":false,
+    "ClientParseToRichText":true,
+    "ClientUseIdentServer":false,
+    "ClientKeepDebugWindow":true
+}
