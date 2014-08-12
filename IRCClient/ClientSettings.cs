@@ -43,6 +43,7 @@ namespace IRCClient
 
         // This is where the config file will stay.
         public const string ClientConfigPath = "configs/settings.json";
+        public const string ClientInitScriptPath = "configs/fircc.init";
         #endregion
 
         #region "Settings that should be set in the constructor"
@@ -58,6 +59,7 @@ namespace IRCClient
 
         // Appearance information.
         public bool ClientMarkOps;
+        public bool ClientMoveOpsUp;
         public bool ClientShowTimeStamps;
 
         // When to show baloon tips from the tray.
@@ -90,6 +92,7 @@ namespace IRCClient
             ClientFontSize = 10;
 
             ClientMarkOps = true;
+            ClientMoveOpsUp = true;
             ClientShowTimeStamps = true;
 
             ClientNotications = NotificatonSettings.PersonalMessages;
