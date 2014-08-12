@@ -54,7 +54,7 @@ namespace IRCClient
         // Information for the default font and realted shit.
         public FontFamily ClientFontFamily;
         public FontStyle ClientFontStyle;
-        public int ClientFontSize;
+        public float ClientFontSize;
 
         // Appearance information.
         public bool ClientMarkOps;
