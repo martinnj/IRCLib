@@ -42,6 +42,7 @@
             this.flankerIRCClientToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.iRCLibToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.jSONnetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.scintillaNETToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainsplitter = new System.Windows.Forms.SplitContainer();
             this.roomlist = new System.Windows.Forms.TreeView();
@@ -49,7 +50,6 @@
             this.iconMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.scintillaNETToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainsplitter)).BeginInit();
             this.mainsplitter.Panel1.SuspendLayout();
@@ -88,7 +88,7 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -154,6 +154,12 @@
             this.jSONnetToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.jSONnetToolStripMenuItem.Text = "JSON.net";
             // 
+            // scintillaNETToolStripMenuItem
+            // 
+            this.scintillaNETToolStripMenuItem.Name = "scintillaNETToolStripMenuItem";
+            this.scintillaNETToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.scintillaNETToolStripMenuItem.Text = "ScintillaNET";
+            // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("aboutToolStripMenuItem.Image")));
@@ -211,12 +217,6 @@
             this.toolStripMenuItem2.Text = "Exit";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
             // 
-            // scintillaNETToolStripMenuItem
-            // 
-            this.scintillaNETToolStripMenuItem.Name = "scintillaNETToolStripMenuItem";
-            this.scintillaNETToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
-            this.scintillaNETToolStripMenuItem.Text = "ScintillaNET";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -230,6 +230,7 @@
             this.Name = "MainForm";
             this.Text = "Flankers IRC Client";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.mainsplitter.Panel1.ResumeLayout(false);

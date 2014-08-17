@@ -28,80 +28,56 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
-            this.TextPanelSplitter = new System.Windows.Forms.SplitContainer();
-            this.ChannelText = new System.Windows.Forms.RichTextBox();
-            this.TimestampBox = new System.Windows.Forms.RichTextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.TextPanelSplitter)).BeginInit();
-            this.TextPanelSplitter.Panel1.SuspendLayout();
-            this.TextPanelSplitter.Panel2.SuspendLayout();
-            this.TextPanelSplitter.SuspendLayout();
+            this.components = new System.ComponentModel.Container();
+            this.ChatTextBox = new FastColoredTextBoxNS.FastColoredTextBox();
+            ((System.ComponentModel.ISupportInitialize)(this.ChatTextBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // vScrollBar1
+            // ChatTextBox
             // 
-            this.vScrollBar1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.vScrollBar1.Location = new System.Drawing.Point(617, 0);
-            this.vScrollBar1.Name = "vScrollBar1";
-            this.vScrollBar1.Size = new System.Drawing.Size(17, 432);
-            this.vScrollBar1.TabIndex = 0;
-            // 
-            // TextPanelSplitter
-            // 
-            this.TextPanelSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TextPanelSplitter.Location = new System.Drawing.Point(0, 0);
-            this.TextPanelSplitter.Name = "TextPanelSplitter";
-            // 
-            // TextPanelSplitter.Panel1
-            // 
-            this.TextPanelSplitter.Panel1.Controls.Add(this.TimestampBox);
-            // 
-            // TextPanelSplitter.Panel2
-            // 
-            this.TextPanelSplitter.Panel2.Controls.Add(this.ChannelText);
-            this.TextPanelSplitter.Size = new System.Drawing.Size(617, 432);
-            this.TextPanelSplitter.SplitterDistance = 117;
-            this.TextPanelSplitter.TabIndex = 1;
-            // 
-            // ChannelText
-            // 
-            this.ChannelText.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ChannelText.Location = new System.Drawing.Point(0, 0);
-            this.ChannelText.Name = "ChannelText";
-            this.ChannelText.Size = new System.Drawing.Size(496, 432);
-            this.ChannelText.TabIndex = 0;
-            this.ChannelText.Text = "";
-            // 
-            // TimestampBox
-            // 
-            this.TimestampBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TimestampBox.Location = new System.Drawing.Point(0, 0);
-            this.TimestampBox.Name = "TimestampBox";
-            this.TimestampBox.Size = new System.Drawing.Size(117, 432);
-            this.TimestampBox.TabIndex = 0;
-            this.TimestampBox.Text = "";
+            this.ChatTextBox.AutoCompleteBracketsList = new char[] {
+        '(',
+        ')',
+        '{',
+        '}',
+        '[',
+        ']',
+        '\"',
+        '\"',
+        '\'',
+        '\''};
+            this.ChatTextBox.AutoScrollMinSize = new System.Drawing.Size(2, 14);
+            this.ChatTextBox.BackBrush = null;
+            this.ChatTextBox.CharHeight = 14;
+            this.ChatTextBox.CharWidth = 8;
+            this.ChatTextBox.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.ChatTextBox.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+            this.ChatTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ChatTextBox.IsReplaceMode = false;
+            this.ChatTextBox.Location = new System.Drawing.Point(0, 0);
+            this.ChatTextBox.Name = "ChatTextBox";
+            this.ChatTextBox.Paddings = new System.Windows.Forms.Padding(0);
+            this.ChatTextBox.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
+            this.ChatTextBox.ShowLineNumbers = false;
+            this.ChatTextBox.Size = new System.Drawing.Size(634, 432);
+            this.ChatTextBox.TabIndex = 1;
+            this.ChatTextBox.Zoom = 100;
             // 
             // TextPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.TextPanelSplitter);
-            this.Controls.Add(this.vScrollBar1);
+            this.Controls.Add(this.ChatTextBox);
             this.Name = "TextPanel";
             this.Size = new System.Drawing.Size(634, 432);
-            this.TextPanelSplitter.Panel1.ResumeLayout(false);
-            this.TextPanelSplitter.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.TextPanelSplitter)).EndInit();
-            this.TextPanelSplitter.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ChatTextBox)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.VScrollBar vScrollBar1;
-        private System.Windows.Forms.SplitContainer TextPanelSplitter;
-        private System.Windows.Forms.RichTextBox ChannelText;
-        private System.Windows.Forms.RichTextBox TimestampBox;
+        private FastColoredTextBoxNS.FastColoredTextBox ChatTextBox;
+
     }
 }

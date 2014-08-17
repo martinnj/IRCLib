@@ -12,8 +12,8 @@ MSG Nickserv Identify Alice
 
 // Join any number of rooms.
 JOIN #ManInTheMiddle
-// If the above joins a room, send a message, if not, the following will not execute.
-> MSG Hey guys! :)
+// If the above joins a room, send a message, if not, the following will not execute. (Not implemented)
+// > MSG Hey guys! :)
 
 JOIN #GoodCode
 

@@ -47,6 +47,21 @@ namespace IRCClient
             ClientSettings.SaveToFile(ClientSettings.ClientConfigPath, Settings);
 
         }
+
+        // Load the settings from the file into the settings object.
+        private void LoadClientState()
+        {
+            Settings = ClientSettings.LoadFromFile(ClientSettings.ClientConfigPath);
+            ApplyClientSettings();
+        }
+
+        // Apply the currently loaded settings object to the program, as best as we can :)
+        private void ApplyClientSettings()
+        {
+            Location = Settings.ClientLocation;
+            Size = Settings.ClientSize;
+            WindowState = Settings.ClientStartState;
+        }
         #endregion
 
 
@@ -74,15 +89,25 @@ namespace IRCClient
             var aboutfrm = new AboutForm();
             aboutfrm.ShowDialog();
         }
-        #endregion
 
+        // What happens when the settings window open.
         private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var settingsfrm = new SettingsForm(Settings);
             if (settingsfrm.ShowDialog() == DialogResult.OK)
             {
                 // Apply settings!
+                ApplyClientSettings();
             }
+        }
+
+        #endregion
+
+
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            LoadClientState();
         }
 
 
